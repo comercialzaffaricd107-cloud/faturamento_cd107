@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>CD STOK CENTER · Executive Dashboard</title>
 <script>/*!
  * Chart.js v4.5.1
@@ -56,7 +56,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .clock-d{font-size:8.5px;color:var(--t3);letter-spacing:.3px;text-align:right;margin-top:1px;}
 
 /* DRAWER */
-.drawer{position:relative;z-index:19;background:var(--s2);border-bottom:1px solid var(--b1);display:none;padding:7px 18px;gap:8px;align-items:flex-start;flex-wrap:wrap;flex-shrink:0;}
+.drawer{position:relative;z-index:19;background:var(--s2);border-bottom:1px solid var(--b1);display:none;padding:7px 18px;gap:8px;align-items:flex-start;flex-wrap:wrap;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .drawer.open{display:flex;}
 .drawer-section{display:flex;flex-direction:column;gap:3px;}
 .drawer-section-lbl{font-size:8.5px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;padding:0 2px;}
@@ -203,6 +203,102 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   .topbar,.drawer,.dstrip{display:none !important;}
   body{background:#080c12 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   .canvas{height:auto !important;overflow:visible !important;}
+}
+
+/* ══ MOBILE RESPONSIVO ══ */
+@media(max-width:768px){
+  /* reset overflow para scroll normal no celular */
+  html,body{overflow:auto !important;height:auto !important;}
+
+  /* topbar compacta */
+  .topbar{height:auto;padding:8px 12px;flex-wrap:wrap;gap:6px;}
+  .topbar-center{display:none;} /* meses: hidden no celular, usa seletor de dia */
+  .brand-sub{display:none;}
+  .brand-name{font-size:14px;}
+  .clock-d{display:none;}
+  .clock-t{font-size:12px;}
+  .tbtn{padding:5px 9px;font-size:10px;}
+  .tbtn svg{width:11px;height:11px;}
+
+  /* day strip: scroll horizontal */
+  .dstrip{padding:4px 10px;gap:2px;}
+  .dpip{min-width:26px;height:24px;font-size:10px;}
+
+  /* canvas: coluna única, scroll vertical */
+  .canvas{
+    display:flex !important;
+    flex-direction:column !important;
+    height:auto !important;
+    overflow:visible !important;
+    padding:8px 10px 16px;
+    gap:10px;
+  }
+
+  /* KPIs: 2 por linha */
+  .kpi-row{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:8px;
+    order:0;
+  }
+  .kcard{padding:10px 12px 9px;}
+  .kval{font-size:18px !important;}
+  .klbl{font-size:8px;}
+  .kmeta{font-size:9px;}
+
+  /* todas as colunas viram blocos empilhados */
+  .col-left,.col-center,.col-right,.col-ops{
+    grid-column:unset !important;
+    grid-row:unset !important;
+    width:100% !important;
+    min-height:unset !important;
+  }
+  .col-left{order:1;}
+  .col-center{order:2;}
+  .col-ops{order:3;}
+  .col-right{order:4;}
+
+  /* tabela diária: compacta e sem overflow oculto */
+  .col-left .panel{max-height:none !important;}
+  .dt thead th{padding:5px 6px;font-size:8px;}
+  .dt tbody td{padding:3px 6px;font-size:10.5px;}
+  .dt tfoot td{padding:5px 6px;font-size:10px;}
+  .dn{font-size:11px;}
+  .dw{font-size:8px;}
+
+  /* gráfico faturamento: altura menor no celular */
+  .fat-chart-wrap{height:160px !important;padding:6px 8px;}
+
+  /* tabela meta: scroll horizontal se necessário */
+  .panel .mtable,.panel .mwk{font-size:9.5px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .mtable th,.mtable td{padding:4px 7px;white-space:nowrap;}
+  .mwk th,.mwk td{padding:3px 5px;white-space:nowrap;}
+
+  /* op strip: coluna única no celular */
+  .op-strip{grid-template-columns:1fr !important;gap:8px;padding:8px;}
+  .oc{width:100%;}
+  .okpis{grid-template-columns:1fr 1fr 1fr !important;}
+  .omini{padding:4px 8px;}
+
+  /* cards direita: grid 2 cols */
+  .col-right{display:grid !important;grid-template-columns:1fr 1fr;gap:8px;}
+  .scard{min-width:0;}
+  .sval{font-size:12px !important;}
+  .shdr{font-size:8px;padding:6px 10px;}
+  .scell{padding:7px 8px;}
+
+  /* painel de % atingimento: span 2 cols */
+  .col-right .scard:first-child{grid-column:1/-1;}
+
+  /* modal compartilhar: full screen */
+  #share-modal > div{width:94vw !important;padding:18px 16px !important;}
+}
+
+@media(max-width:400px){
+  .kpi-row{grid-template-columns:1fr !important;}
+  .col-right{grid-template-columns:1fr !important;}
+  .col-right .scard:first-child{grid-column:1/1;}
+  .canvas{padding:6px 8px 14px;}
 }
 </style>
 </head>
