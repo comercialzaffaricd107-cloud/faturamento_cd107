@@ -901,20 +901,56 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
     }
   });
 
-  // Encurtar link via TinyURL
-  document.getElementById('sh-short-btn').addEventListener('click', () => {
+  // Encurtar link via API direta (sem abrir site externo)
+  document.getElementById('sh-short-btn').addEventListener('click', async () => {
     const url = document.getElementById('sh-link-input').value;
     if (!url) return;
     const btn = document.getElementById('sh-short-btn');
-    btn.textContent = '⏳ Abrindo...';
-    // Abre TinyURL com o link já preenchido
-    const tinyUrl = 'https://tinyurl.com/create.php?url=' + encodeURIComponent(url);
-    window.open(tinyUrl, '_blank');
+    const info = document.getElementById('sh-link-info');
+    btn.textContent = '⏳ Encurtando...';
+    btn.disabled = true;
+
+    // Tenta CleanURI (API gratuita, sem autenticação)
+    try {
+      const resp = await fetch('https://cleanuri.com/api/v1/shorten', {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: 'url=' + encodeURIComponent(url)
+      });
+      const data = await resp.json();
+      if (data.result_url) {
+        document.getElementById('sh-link-input').value = data.result_url;
+        info.innerHTML = '✅ Link encurtado! Copie e envie pelo WhatsApp.';
+        btn.textContent = '✓ Encurtado';
+        btn.style.borderColor = 'var(--green)';
+        btn.style.color = 'var(--green)';
+        // Copiar automaticamente
+        try { await navigator.clipboard.writeText(data.result_url); info.innerHTML += ' (copiado!)'; } catch(e){}
+        return;
+      }
+    } catch(e) {}
+
+    // Fallback: is.gd
+    try {
+      const resp2 = await fetch('https://is.gd/create.php?format=json&url=' + encodeURIComponent(url));
+      const data2 = await resp2.json();
+      if (data2.shorturl) {
+        document.getElementById('sh-link-input').value = data2.shorturl;
+        info.innerHTML = '✅ Link encurtado! Copie e envie pelo WhatsApp.';
+        btn.textContent = '✓ Encurtado';
+        btn.style.borderColor = 'var(--green)';
+        btn.style.color = 'var(--green)';
+        try { await navigator.clipboard.writeText(data2.shorturl); info.innerHTML += ' (copiado!)'; } catch(e){}
+        return;
+      }
+    } catch(e) {}
+
+    // Se tudo falhar — copiar o longo e instruir
+    info.innerHTML = '⚠ Encurtador indisponível. Copie o link longo e cole em <strong>tinyurl.com</strong>';
     btn.textContent = '✂ Encurtar';
-    // Mostrar instrução
-    document.getElementById('sh-link-info').innerHTML =
-      '✅ TinyURL abriu em nova aba — copie o link curto gerado e cole no WhatsApp';
+    btn.disabled = false;
   });
+
 
   // Opção imagem/PDF
   document.getElementById('sh-opt-img').addEventListener('click', () => {
