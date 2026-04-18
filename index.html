@@ -133,6 +133,10 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .dn{font-weight:700;color:var(--t1);font-size:11px;}
 .dw{font-size:8px;color:var(--t3);margin-left:2px;}
 .vpos{color:#ff9a2e;font-weight:600;font-family:'Consolas','Courier New',monospace;font-size:10px;}
+.vpos.above{color:#00e5a0 !important;}
+.vpos.below{color:#ff4d6d !important;}
+.rsel .vpos.above{color:#00e5a0 !important;}
+.rsel .vpos.below{color:#ff4d6d !important;}
 .vdim{color:var(--t3);}
 .rsel{background:rgba(255,122,26,.07) !important;}
 .rsel td{color:var(--t1) !important;}
@@ -913,14 +917,19 @@ function updateKPIs(){
   const sp=D.semMeta>0?Math.round((D.semFat/D.semMeta)*100):0;
   const fmtM=v=>'R$ '+(v/1e6).toFixed(1)+'M';
 
-  document.getElementById('k-fat').textContent=fmtM(tf);
+  const kfatEl=document.getElementById('k-fat');
+  kfatEl.textContent=fmtM(tf);
+  kfatEl.style.color=pm>=100?'#00e5a0':'#ff4d6d';
   const kfp=document.getElementById('k-fat-pct');
-  kfp.textContent=(pm>=100?'▲ ':'▼ ')+pm+'%';kfp.className='kdelta '+(pm>=100?'pos':'warn');
+  kfp.textContent=(pm>=100?'▲ ':'▼ ')+pm+'%';kfp.className='kdelta '+(pm>=100?'pos':'neg');
   document.getElementById('k-fat-prog').style.width=Math.min(pm,100)+'%';
+  document.getElementById('k-fat-prog').style.background=pm>=100?'linear-gradient(90deg,#00e5a0,#00d4ff)':'linear-gradient(90deg,#ff4d6d,#ff7a1a)';
 
-  document.getElementById('k-tend').textContent=fmtM(tend);
+  const ktendEl=document.getElementById('k-tend');
+  ktendEl.textContent=fmtM(tend);
+  ktendEl.style.color=pt>=100?'#00e5a0':'#ff4d6d';
   const ktd=document.getElementById('k-tend-d');
-  ktd.textContent=(pt>=100?'▲ ':'▼ ')+pt+'%';ktd.className='kdelta '+(pt>=100?'pos':'warn');
+  ktd.textContent=(pt>=100?'▲ ':'▼ ')+pt+'%';ktd.className='kdelta '+(pt>=100?'pos':'neg');
   document.getElementById('k-tend-prog').style.width=Math.min(pt,100)+'%';
 
   document.getElementById('k-ticket').textContent='R$ '+tkt.toFixed(2).replace('.',',');
@@ -941,10 +950,12 @@ function updateTable(){
     if(d===D.curDay)tr.className='rsel';
     const fat=D.fat26[d],wk=D.wk26[d]||'',vol=D.spVol[d]||0,tkt=fat&&vol>0?(fat/vol):0;
     if(fat){
+      const metaDia=D.metaMes/30;
+      const fatCls=fat>=metaDia?'vpos above':'vpos below';
       tr.innerHTML=`<td><span class="dn">${d}</span><span class="dw">${wk}</span></td>
         <td class="vdim" style="font-size:10.5px">${vol?fmtInt(vol):'–'}</td>
         <td class="vdim" style="font-size:10.5px">${tkt>0?tkt.toFixed(2).replace('.',','):'–'}</td>
-        <td class="vpos">${fmtInt(fat)}</td>`;
+        <td class="${fatCls}">${fmtInt(fat)}</td>`;
     }else{
       tr.innerHTML=`<td><span class="dn" style="color:var(--t3)">${d}</span><span class="dw">${wk}</span></td>
         <td class="vdim">–</td><td class="vdim">–</td><td class="vdim">–</td>`;
@@ -954,7 +965,9 @@ function updateTable(){
   const tf=sumObj(D.fat26),tv=sumObj(D.spVol),tt=tv>0?(tf/tv):0;
   document.getElementById('ft-vol').textContent=fmtInt(tv);
   document.getElementById('ft-tkt').textContent=tt>0?tt.toFixed(2).replace('.',','):'–';
-  document.getElementById('ft-fat').textContent=fmtInt(tf);
+  const ftEl=document.getElementById('ft-fat');
+  ftEl.textContent=fmtInt(tf);
+  ftEl.style.color=tf>=D.metaMes?'#00e5a0':'#ff4d6d';
 }
 
 function updateSummary(){
@@ -969,9 +982,15 @@ function updateSummary(){
   [['s-meta',D.metaMes],['s-fat',tf],['s-trend',tend],
    ['s-gap',(gap>=0?'+':'')+fmtInt(gap)],['s-pct',pct]].forEach(([id,v])=>{
     const t=typeof v==='string'?v:f(v);
-    document.getElementById(id).textContent=t;
+    const el=document.getElementById(id);if(el)el.textContent=t;
     const el2=document.getElementById(id+'2');if(el2)el2.textContent=t;
   });
+  // cor faturado vs meta
+  ['s-fat','s-fat2'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.color=tf>=D.metaMes?'#00e5a0':'#ff4d6d';});
+  // cor GAP
+  ['s-gap','s-gap2'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.color=gap>=0?'#00e5a0':'#ff4d6d';});
+  // cor % realização
+  ['s-pct','s-pct2'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.color=tend>=D.metaMes?'#00e5a0':'#ff4d6d';});
   ['m1','m2','m3'].forEach((id,i)=>{const v=sem[i]?fmtInt(sem[i]):'–';document.getElementById(id).textContent=v;document.getElementById(id+'b').textContent=v;});
   document.getElementById('m-proj').textContent=f(proj);document.getElementById('m-proj2').textContent=f(proj);
   document.getElementById('m-trend').textContent=f(Math.round(avg));document.getElementById('m-trend2').textContent=f(Math.round(avg));
@@ -984,7 +1003,9 @@ function updateRight(){
   document.getElementById('r-dh').textContent='Faturado · Dia '+cd;
   document.getElementById('r-mh').textContent='Meta · Dia '+cd;
   document.getElementById('r-d25').textContent=fmtInt(f25);
-  document.getElementById('r-d26').textContent=fmtInt(f26);
+  const rd26el=document.getElementById('r-d26');
+  rd26el.textContent=fmtInt(f26);
+  rd26el.style.color=f26>=D.metaDia26?'#00e5a0':'#ff4d6d';
   document.getElementById('r-dvar').textContent=f25>0?'+'+vr+'% vs 2025':'R$';
   document.getElementById('r-m25').textContent=fmtInt(D.metaDia25);
   document.getElementById('r-m26').textContent=fmtInt(D.metaDia26);
