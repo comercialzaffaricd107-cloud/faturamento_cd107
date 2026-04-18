@@ -544,7 +544,9 @@ const DEF={
   metaMes:171882629,semFat:633759014,semMeta:579407529,
   metaDia26:6342626,metaDia25:5593122,
   metaAting:{Jan:112,Fev:102,Mar:106,Abr:null},
-  curDay:15
+  curDay:15,
+  fatVol26:{},
+  fatVol25:{}
 };
 
 let D=JSON.parse(JSON.stringify(DEF));
@@ -595,22 +597,38 @@ const readLatin1=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=e=
 // ── PARSERS ──
 function parseFat(text,targetYear){
   const rows=parseCSV(text);
-  const byYear={},cat={},wk={};
+  // Indexa por [ano_mes][dia] para separar meses corretamente
+  const byMY={},cat={},wk={},volMY={},mDays={};
   for(const row of rows){
     const raw=row['Dia : Nível 2']||'',ci=raw.indexOf(' : ');if(ci<0)continue;
     const dp=raw.substring(0,ci).trim(),cp=raw.substring(ci+3).trim();
     const dStr=dp.split(' ')[0],wkStr=dp.split(' ')[1]||'';
-    const[dd,,yyyy]=dStr.split('/').map(Number);if(!dd||!yyyy)continue;
+    const[dd,mm,yyyy]=dStr.split('/').map(Number);if(!dd||!mm||!yyyy)continue;
     const c=cp.split('\\')[0].trim();
     const v=parseBR(row['Vlr Saída Outras']||'0')+parseBR(row['Vlr Saída Venda']||'0');
-    if(!byYear[yyyy])byYear[yyyy]={};
-    byYear[yyyy][dd]=(byYear[yyyy][dd]||0)+v;
+    const q=parseBR(row['Qtd Saída Venda']||'0')+parseBR(row['Qtd Saída Outras']||'0');
+    const key=yyyy+'_'+String(mm).padStart(2,'0');
+    if(!byMY[key])byMY[key]={};
+    if(!volMY[key])volMY[key]={};
+    if(!mDays[key])mDays[key]=new Set();
+    byMY[key][dd]=(byMY[key][dd]||0)+v;
+    volMY[key][dd]=(volMY[key][dd]||0)+q;
+    mDays[key].add(dd);
     if(yyyy===2026){cat[c]=(cat[c]||0)+v;if(!wk[dd])wk[dd]=wkStr;}
   }
   const rnd=o=>{const r={};for(const k in o)r[k]=Math.round(o[k]);return r;};
-  const result={};
-  for(const y in byYear)result[y]=rnd(byYear[y]);
-  return{byYear:result,cat:rnd(cat),wk};
+  // Detecta mês principal de 2026 (maior nº de dias distintos)
+  const mon26=Object.keys(mDays).filter(k=>k.startsWith('2026')).sort().pop();
+  const mm26=mon26?parseInt(mon26.split('_')[1]):4;
+  // Pega o mesmo mês para 2025
+  const mon25='2025_'+String(mm26).padStart(2,'0');
+  const byYear={
+    2026: rnd(byMY[mon26]||{}),
+    2025: rnd(byMY[mon25]||{})
+  };
+  const vol26=rnd(volMY[mon26]||{});
+  const vol25=rnd(volMY[mon25]||{});
+  return{byYear,cat:rnd(cat),wk,vol:vol26,vol25,mes:mm26};
 }
 function parseSep(text){
   const rows=parseCSV(text),p={},v={},t={};
@@ -640,9 +658,11 @@ document.getElementById('file-fat25').addEventListener('change',async e=>{
   try{
     const txt=await readLatin1(f);
     const r=parseFat(txt);
-    const data25=r.byYear[2025]||r.byYear[Object.keys(r.byYear).find(y=>y!='2026')]||{};
+    const yr25=Object.keys(r.byYear).find(y=>parseInt(y)<2026)||'2025';
+    const data25=r.byYear[yr25]||{};
     if(Object.keys(data25).length===0){setSt('st-fat25','⚠ nenhum dado 2025 encontrado','');return;}
     D.fat25=data25;
+    if(r.vol25&&Object.keys(r.vol25).length>0)D.fatVol25=r.vol25;
     const ok=saveFat25(data25);
     setSt('st-fat25',ok?'✓ salvo: '+f.name:'✓ carregado (sem storage): '+f.name, ok?'saved':'ok');
     updateAll();
@@ -668,6 +688,7 @@ document.getElementById('file-fat26').addEventListener('change',async e=>{
     D.fat26=data26;
     if(Object.keys(r.cat).length>0)D.cat26=r.cat;
     if(Object.keys(r.wk).length>0)Object.assign(D.wk26,r.wk);
+    if(r.vol&&Object.keys(r.vol).length>0)D.fatVol26=r.vol;
     setSt('st-fat26','✓ '+f.name,'ok');
     updateAll();
   }catch(e){setSt('st-fat26','erro ao processar','');}
@@ -745,6 +766,7 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
   function buildShareURL() {
     const payload = {
       fat26: D.fat26,
+      fatVol26: D.fatVol26||{},
       fat25: D.fat25,
       wk26:  D.wk26,
       cat26: D.cat26,
@@ -774,6 +796,7 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
       const json = decodeURIComponent(escape(atob(d)));
       const payload = JSON.parse(json);
       Object.assign(D, payload);
+      if(payload.fatVol26)D.fatVol26=payload.fatVol26;
       return true;
     } catch(e) {
       return false;
@@ -913,7 +936,9 @@ function updateKPIs(){
   const avg=nd>0?tf/nd:0,tend=Math.round(avg*30);
   const pm=D.metaMes>0?Math.round((tf/D.metaMes)*100):0;
   const pt=D.metaMes>0?Math.round((tend/D.metaMes)*100):0;
-  const tv=sumObj(D.spVol),tkt=tv>0?(tf/tv):0;
+  const _fvk=d=>(D.fatVol26&&D.fatVol26[d]?D.fatVol26[d]:0)+(D.spVol[d]||0)+(D.bxVol[d]||0)+(D.slVol[d]||0);
+  const tvk=Object.keys(D.fat26).reduce((s,d)=>s+_fvk(parseInt(d)),0);
+  const tkt=tvk>0?Math.round(tf/tvk):0;
   const sp=D.semMeta>0?Math.round((D.semFat/D.semMeta)*100):0;
   const fmtM=v=>'R$ '+(v/1e6).toFixed(1)+'M';
 
@@ -932,7 +957,7 @@ function updateKPIs(){
   ktd.textContent=(pt>=100?'▲ ':'▼ ')+pt+'%';ktd.className='kdelta '+(pt>=100?'pos':'neg');
   document.getElementById('k-tend-prog').style.width=Math.min(pt,100)+'%';
 
-  document.getElementById('k-ticket').textContent='R$ '+tkt.toFixed(2).replace('.',',');
+  document.getElementById('k-ticket').textContent='R$ '+fmtInt(tkt);
   document.getElementById('k-ticket-d').textContent='↑ período';
 
   document.getElementById('k-sem').textContent=fmtM(D.semFat);
@@ -948,13 +973,13 @@ function updateTable(){
   for(let d=1;d<=30;d++){
     const tr=document.createElement('tr');
     if(d===D.curDay)tr.className='rsel';
-    const fat=D.fat26[d],wk=D.wk26[d]||'',vol=D.spVol[d]||0,tkt=fat&&vol>0?(fat/vol):0;
+    const fat=D.fat26[d],wk=D.wk26[d]||'',vol=((D.fatVol26&&D.fatVol26[d])||0)+(D.spVol[d]||0)+(D.bxVol[d]||0)+(D.slVol[d]||0),tkt=fat&&vol>0?Math.round(fat/vol):0;
     if(fat){
       const metaDia=D.metaMes/30;
       const fatCls=fat>=metaDia?'vpos above':'vpos below';
       tr.innerHTML=`<td><span class="dn">${d}</span><span class="dw">${wk}</span></td>
         <td class="vdim" style="font-size:10.5px">${vol?fmtInt(vol):'–'}</td>
-        <td class="vdim" style="font-size:10.5px">${tkt>0?tkt.toFixed(2).replace('.',','):'–'}</td>
+        <td class="vdim" style="font-size:10.5px">${tkt>0?fmtInt(tkt):'–'}</td>
         <td class="${fatCls}">${fmtInt(fat)}</td>`;
     }else{
       tr.innerHTML=`<td><span class="dn" style="color:var(--t3)">${d}</span><span class="dw">${wk}</span></td>
@@ -962,9 +987,12 @@ function updateTable(){
     }
     tb.appendChild(tr);
   }
-  const tf=sumObj(D.fat26),tv=sumObj(D.spVol),tt=tv>0?(tf/tv):0;
+  const tf=sumObj(D.fat26);
+  const _fv=d=>(D.fatVol26&&D.fatVol26[d]?D.fatVol26[d]:0)+(D.spVol[d]||0)+(D.bxVol[d]||0)+(D.slVol[d]||0);
+  const tv=Object.keys(D.fat26).reduce((s,d)=>s+_fv(parseInt(d)),0);
+  const tt=tv>0?Math.round(tf/tv):0;
   document.getElementById('ft-vol').textContent=fmtInt(tv);
-  document.getElementById('ft-tkt').textContent=tt>0?tt.toFixed(2).replace('.',','):'–';
+  document.getElementById('ft-tkt').textContent=tt>0?fmtInt(tt):'–';
   const ftEl=document.getElementById('ft-fat');
   ftEl.textContent=fmtInt(tf);
   ftEl.style.color=tf>=D.metaMes?'#00e5a0':'#ff4d6d';
