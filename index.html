@@ -638,7 +638,17 @@ function parseSep(text){
 }
 function parseBox(text){
   const rows=parseCSV(text),p={},v={},t={};
-  for(const r of rows){const dt=(r['DTAHORINITAREFA']||'').substring(0,10);const[dd]=dt.split('/').map(Number);if(!dd)continue;p[dd]=(p[dd]||0)+parseBR(r['PESO']);v[dd]=(v[dd]||0)+parseBR(r['QTDVOLUME']);t[dd]=(t[dd]||0)+1;}
+  for(const r of rows){
+    // Filtro: Movimentação Vertical + DESCENDENTE + DESTINO começa com BOX
+    if(r['ATIVIDADE']!=='Movimentação Vertical')continue;
+    if(r['TIPMV']!=='DESCENDENTE')continue;
+    if(!(r['DESTINO']||'').startsWith('BOX'))continue;
+    const dt=(r['DTAHORINITAREFA']||'').substring(0,10);
+    const[dd]=dt.split('/').map(Number);if(!dd)continue;
+    p[dd]=(p[dd]||0)+parseBR(r['PESO']);
+    v[dd]=(v[dd]||0)+parseBR(r['QTDVOLUME']);
+    t[dd]=(t[dd]||0)+1;
+  }
   for(const k in p){p[k]=Math.round(p[k]);v[k]=Math.round(v[k]);}
   return{p,v,t};
 }
@@ -936,7 +946,7 @@ function updateKPIs(){
   const avg=nd>0?tf/nd:0,tend=Math.round(avg*30);
   const pm=D.metaMes>0?Math.round((tf/D.metaMes)*100):0;
   const pt=D.metaMes>0?Math.round((tend/D.metaMes)*100):0;
-  const _fvk=d=>(D.fatVol26&&D.fatVol26[d]?D.fatVol26[d]:0)+(D.spVol[d]||0)+(D.bxVol[d]||0)+(D.slVol[d]||0);
+  const _fvk=d=>Math.round((D.fatVol26&&D.fatVol26[d]?D.fatVol26[d]:0)+(D.spVol[d]||0)+(D.bxVol[d]||0)+(D.slVol[d]||0));
   const tvk=Object.keys(D.fat26).reduce((s,d)=>s+_fvk(parseInt(d)),0);
   const tkt=tvk>0?Math.round(tf/tvk):0;
   const sp=D.semMeta>0?Math.round((D.semFat/D.semMeta)*100):0;
@@ -973,7 +983,7 @@ function updateTable(){
   for(let d=1;d<=30;d++){
     const tr=document.createElement('tr');
     if(d===D.curDay)tr.className='rsel';
-    const fat=D.fat26[d],wk=D.wk26[d]||'',vol=((D.fatVol26&&D.fatVol26[d])||0)+(D.spVol[d]||0)+(D.bxVol[d]||0)+(D.slVol[d]||0),tkt=fat&&vol>0?Math.round(fat/vol):0;
+    const fat=D.fat26[d],wk=D.wk26[d]||'',vol=Math.round(((D.fatVol26&&D.fatVol26[d])||0)+(D.spVol[d]||0)+(D.bxVol[d]||0)+(D.slVol[d]||0)),tkt=fat&&vol>0?Math.round(fat/vol):0;
     if(fat){
       const metaDia=D.metaMes/30;
       const fatCls=fat>=metaDia?'vpos above':'vpos below';
@@ -988,7 +998,7 @@ function updateTable(){
     tb.appendChild(tr);
   }
   const tf=sumObj(D.fat26);
-  const _fv=d=>(D.fatVol26&&D.fatVol26[d]?D.fatVol26[d]:0)+(D.spVol[d]||0)+(D.bxVol[d]||0)+(D.slVol[d]||0);
+  const _fv=d=>Math.round((D.fatVol26&&D.fatVol26[d]?D.fatVol26[d]:0)+(D.spVol[d]||0)+(D.bxVol[d]||0)+(D.slVol[d]||0));
   const tv=Object.keys(D.fat26).reduce((s,d)=>s+_fv(parseInt(d)),0);
   const tt=tv>0?Math.round(tf/tv):0;
   document.getElementById('ft-vol').textContent=fmtInt(tv);
