@@ -787,24 +787,25 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
 
   // ── Gera URL com dados embutidos ──
   function buildShareURL() {
+    // Payload enxuto: só o necessário para reconstruir o painel
     const payload = {
       fat26: D.fat26,
-      fatVol26: D.fatVol26||{},
       fat25: D.fat25,
       wk26:  D.wk26,
-      cat26: D.cat26,
-      spVol: D.spVol, spTar: D.spTar, spPeso: D.spPeso,
-      bxVol: D.bxVol, bxTar: D.bxTar, bxPeso: D.bxPeso,
-      slVol: D.slVol, slTar: D.slTar,
+      spVol: D.spVol,
+      bxVol: D.bxVol,
+      slVol: D.slVol,
       metaMes: D.metaMes, semFat: D.semFat, semMeta: D.semMeta,
       metaDia26: D.metaDia26, metaDia25: D.metaDia25,
       metaAting: D.metaAting, curDay: D.curDay
     };
     try {
-      const json  = JSON.stringify(payload);
-      const b64   = btoa(unescape(encodeURIComponent(json)));
-      const url   = location.href.split('?')[0].split('#')[0] + '?d=' + b64;
-      return { url, kb: Math.round(b64.length / 1024) };
+      const json = JSON.stringify(payload);
+      // Compressão simples: remover zeros e espaços desnecessários já feito pelo JSON.stringify
+      const b64  = btoa(unescape(encodeURIComponent(json)));
+      const base = location.href.split('?')[0].split('#')[0];
+      const url  = base + '?d=' + b64;
+      return { url, kb: Math.round(b64.length / 1024), chars: b64.length };
     } catch(e) {
       return { url: null, error: e.message };
     }
@@ -818,8 +819,11 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
       if (!d) return false;
       const json = decodeURIComponent(escape(atob(d)));
       const payload = JSON.parse(json);
-      Object.assign(D, payload);
-      if(payload.fatVol26)D.fatVol26=payload.fatVol26;
+      // Aplicar campos um a um para não sobrescrever funções
+      const fields = ['fat26','fat25','wk26','spVol','bxVol','slVol',
+                      'metaMes','semFat','semMeta','metaDia26','metaDia25',
+                      'metaAting','curDay'];
+      fields.forEach(f => { if(payload[f] !== undefined) D[f] = payload[f]; });
       return true;
     } catch(e) {
       return false;
@@ -851,7 +855,7 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
       if (result.url) {
         document.getElementById('sh-link-input').value = result.url;
         document.getElementById('sh-link-info').textContent =
-          `Tamanho do link: ~${result.kb} KB — compatível com WhatsApp Web, e-mail e navegadores`;
+          `Link com ${result.chars} caracteres — cole no WhatsApp ou e-mail. Se o link for cortado, use a opção PDF.`;
         area.style.display = 'block';
       } else {
         document.getElementById('sh-link-info').textContent = 'Erro: ' + result.error;
