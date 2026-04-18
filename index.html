@@ -49,6 +49,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .topbar-right{display:flex;align-items:center;gap:8px;}
 .tbtn{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:7px;border:1px solid var(--b2);background:var(--s2);cursor:pointer;font-size:10.5px;font-weight:500;color:var(--t2);transition:all .15s;}
 .tbtn:hover{border-color:#ff7a1a;color:#ff7a1a;}
+.tbtn.save-btn{border-color:rgba(255,209,58,.3);color:var(--gold);}
+.tbtn.save-btn:hover{border-color:var(--gold);}
 .tbtn.share{border-color:rgba(255,170,68,.35);color:#ffaa44;}
 .tbtn.share:hover{border-color:#ffaa44;box-shadow:0 0 10px rgba(255,170,68,.18);}
 .tbtn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
@@ -326,6 +328,10 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       Atualizar dados
     </button>
+    <button class="tbtn save-btn" id="save-btn" title="Salvar todos os dados no navegador">
+      <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Salvar sessão
+    </button>
     <button class="tbtn share" id="share-btn">
       <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
       Compartilhar
@@ -345,6 +351,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     <div class="drawer-row">
       <label class="fslot"><input type="file" id="file-fat25" accept=".txt,.csv"><span class="fi">📅</span><div><div class="fn">Base 2025<small>referência histórica</small></div><div class="fs" id="st-fat25">carregar e salvar no navegador</div></div></label>
       <button class="tbtn" id="btn-clear25" style="font-size:9.5px;padding:4px 9px;color:var(--red);border-color:rgba(255,77,109,.25);">✕ Limpar</button>
+      <button class="tbtn" id="btn-clear-sessao" style="font-size:9.5px;padding:4px 9px;color:var(--t3);border-color:var(--b1);" title="Apagar sessão salva no navegador">🗑 Limpar sessão</button>
     </div>
   </div>
   <div class="drawer-vsep"></div>
@@ -688,11 +695,21 @@ document.getElementById('file-fat25').addEventListener('change',async e=>{
     if(r.vol25&&Object.keys(r.vol25).length>0)D.fatVol25=r.vol25;
     const ok=saveFat25(data25);
     setSt('st-fat25',ok?'✓ salvo: '+f.name:'✓ carregado (sem storage): '+f.name, ok?'saved':'ok');
-    updateAll();
+    updateAll();salvarSessao();
   }catch(e){setSt('st-fat25','erro ao processar','');}
 });
 
 // botão limpar 2025
+document.getElementById('btn-clear-sessao').addEventListener('click',()=>{
+  if(confirm('Apagar todos os dados salvos no navegador?')){
+    localStorage.removeItem(LS_SESSAO);
+    localStorage.removeItem('stokcenter_fat25_base');
+    localStorage.removeItem('stokcenter_vol25_base');
+    const btn=document.getElementById('btn-clear-sessao');
+    btn.textContent='✓ Sessão apagada';
+    setTimeout(()=>btn.textContent='🗑 Limpar sessão',2500);
+  }
+});
 document.getElementById('btn-clear25').addEventListener('click',()=>{
   clearFat25();
   D.fat25=JSON.parse(JSON.stringify(DEF.fat25));
@@ -713,22 +730,22 @@ document.getElementById('file-fat26').addEventListener('change',async e=>{
     if(Object.keys(r.wk).length>0)Object.assign(D.wk26,r.wk);
     if(r.vol&&Object.keys(r.vol).length>0)D.fatVol26=r.vol;
     setSt('st-fat26','✓ '+f.name,'ok');
-    updateAll();
+    updateAll();salvarSessao();
   }catch(e){setSt('st-fat26','erro ao processar','');}
 });
 
 // ── UPLOAD: OPERACIONAIS ──
 document.getElementById('file-sep').addEventListener('change',async e=>{
   const f=e.target.files[0];if(!f)return;
-  try{const r=parseSep(await readLatin1(f));D.spPeso=r.p;D.spVol=r.v;D.spTar=r.t;setSt('st-sep','✓ '+f.name,'ok');updateAll();}catch(e){setSt('st-sep','erro','');}
+  try{const r=parseSep(await readLatin1(f));D.spPeso=r.p;D.spVol=r.v;D.spTar=r.t;setSt('st-sep','✓ '+f.name,'ok');updateAll();salvarSessao();}catch(e){setSt('st-sep','erro','');}
 });
 document.getElementById('file-box').addEventListener('change',async e=>{
   const f=e.target.files[0];if(!f)return;
-  try{const r=parseBox(await readLatin1(f));D.bxPeso=r.p;D.bxVol=r.v;D.bxTar=r.t;setSt('st-box','✓ '+f.name,'ok');updateAll();}catch(e){setSt('st-box','erro','');}
+  try{const r=parseBox(await readLatin1(f));D.bxPeso=r.p;D.bxVol=r.v;D.bxTar=r.t;setSt('st-box','✓ '+f.name,'ok');updateAll();salvarSessao();}catch(e){setSt('st-box','erro','');}
 });
 document.getElementById('file-sel').addEventListener('change',async e=>{
   const f=e.target.files[0];if(!f)return;
-  try{const r=parseSel(await readLatin1(f));D.slVol=r.v;D.slTar=r.t;setSt('st-sel','✓ '+f.name,'ok');updateAll();}catch(e){setSt('st-sel','erro','');}
+  try{const r=parseSel(await readLatin1(f));D.slVol=r.v;D.slTar=r.t;setSt('st-sel','✓ '+f.name,'ok');updateAll();salvarSessao();}catch(e){setSt('st-sel','erro','');}
 });
 
 // ── UPLOAD DRAWER TOGGLE ──
@@ -921,11 +938,111 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
           CD STOK CENTER · Executive Dashboard · ${today}
         </div>${clone.outerHTML}
         <script>window.onload=function(){setTimeout(function(){window.print();},600);};<\/script>
-      </body></html>`);
+      
+<!-- RODAPÉ -->
+<div style="
+  text-align:center;
+  padding:8px 24px;
+  font-size:10px;
+  color:#3d5470;
+  border-top:1px solid rgba(60,120,220,.15);
+  background:#0a0f1e;
+  font-family:'Segoe UI',sans-serif;
+  letter-spacing:.4px;
+">
+  Responsável: <strong style="color:#6a85aa;">Silvana Mendes</strong> &nbsp;·&nbsp; CD 107 · Comercial Zaffari
+</div>
+</body></html>`);
       w.document.close();
     }, 150);
   });
 })();
+
+// ── SALVAR / RESTAURAR SESSÃO ──
+const LS_SESSAO = 'stokcenter_sessao';
+
+function salvarSessao() {
+  const payload = {
+    fat26:  D.fat26,
+    fat25:  D.fat25,
+    wk26:   D.wk26,
+    cat26:  D.cat26,
+    spVol:  D.spVol,  spTar: D.spTar,  spPeso: D.spPeso,
+    bxVol:  D.bxVol,  bxTar: D.bxTar,  bxPeso: D.bxPeso,
+    slVol:  D.slVol,  slTar: D.slTar,
+    metaMes: D.metaMes, semFat: D.semFat, semMeta: D.semMeta,
+    metaDia26: D.metaDia26, metaDia25: D.metaDia25,
+    metaAting: D.metaAting, curDay: D.curDay,
+    _salvoEm: new Date().toLocaleString('pt-BR')
+  };
+  try {
+    localStorage.setItem(LS_SESSAO, JSON.stringify(payload));
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+function restaurarSessao() {
+  try {
+    const s = localStorage.getItem(LS_SESSAO);
+    if (!s) return false;
+    const payload = JSON.parse(s);
+    // Aplicar todos os dados salvos
+    const campos = ['fat26','fat25','wk26','cat26','spVol','spTar','spPeso',
+                    'bxVol','bxTar','bxPeso','slVol','slTar',
+                    'metaMes','semFat','semMeta','metaDia26','metaDia25','metaAting','curDay'];
+    campos.forEach(k => { if(payload[k] !== undefined) D[k] = payload[k]; });
+    return payload._salvoEm || true;
+  } catch(e) {
+    return false;
+  }
+}
+
+// Restaurar ao abrir (só se não vier dados pela URL)
+(function(){
+  const params = new URLSearchParams(location.search);
+  if (!params.get('d')) {
+    const salvoEm = restaurarSessao();
+    if (salvoEm) {
+      setTimeout(() => {
+        updateAll();
+        const btn = document.getElementById('save-btn');
+        if (btn) {
+          btn.classList.add('saved');
+          btn.querySelector('svg').style.stroke = 'var(--green)';
+          // Mostrar data do último salvamento
+          const d = document.getElementById('upd-date');
+          if (d && typeof salvoEm === 'string') d.textContent = 'Sessão: ' + salvoEm;
+        }
+      }, 200);
+    }
+  }
+})();
+
+// Botão Salvar Sessão
+document.getElementById('save-btn').addEventListener('click', () => {
+  const btn = document.getElementById('save-btn');
+  const ok = salvarSessao();
+  if (ok) {
+    btn.classList.add('saved');
+    btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><polyline points="20 6 9 17 4 12"/></svg> Salvo!`;
+    btn.style.borderColor = 'var(--green)';
+    btn.style.color = 'var(--green)';
+    // Mostrar data
+    const d = document.getElementById('upd-date');
+    if (d) d.textContent = 'Salvo: ' + new Date().toLocaleString('pt-BR');
+    // Restaurar texto após 3s
+    setTimeout(() => {
+      btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Salvar sessão`;
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 3000);
+  } else {
+    btn.textContent = '⚠ Erro ao salvar';
+    setTimeout(() => { btn.textContent = 'Salvar sessão'; }, 3000);
+  }
+});
 
 // ── DAY PIPS ──
 const pipsEl=document.getElementById('day-pips');
@@ -1160,5 +1277,19 @@ function updateAll(){
 updateAll();
 
 </script>
+
+<!-- RODAPÉ -->
+<div style="
+  text-align:center;
+  padding:8px 24px;
+  font-size:10px;
+  color:#3d5470;
+  border-top:1px solid rgba(60,120,220,.15);
+  background:#0a0f1e;
+  font-family:'Segoe UI',sans-serif;
+  letter-spacing:.4px;
+">
+  Responsável: <strong style="color:#6a85aa;">Silvana Mendes</strong> &nbsp;·&nbsp; CD 107 · Comercial Zaffari
+</div>
 </body>
 </html>
