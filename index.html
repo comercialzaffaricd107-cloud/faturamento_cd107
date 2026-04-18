@@ -1136,7 +1136,8 @@ function updateTable(){
     const fat=D.fat26[d],wk=D.wk26[d]||'',vol=Math.round((D.spVol[d]||0)+(D.bxVol[d]||0)+(D.slVol[d]||0)),tkt=fat&&vol>0?Math.round(fat/vol):0;
     if(fat){
       const metaDia=D.metaMes/30;
-      const fatCls=fat>=metaDia?'vpos above':'vpos below';
+      const isDom=wk==='DOM';
+      const fatCls=isDom||fat>=metaDia?'vpos above':'vpos below';
       tr.innerHTML=`<td><span class="dn">${d}</span><span class="dw">${wk}</span></td>
         <td class="vdim" style="font-size:10.5px">${vol?fmtInt(vol):'–'}</td>
         <td class="vdim" style="font-size:10.5px">${tkt>0?fmtInt(tkt):'–'}</td>
