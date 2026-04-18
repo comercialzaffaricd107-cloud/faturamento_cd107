@@ -780,6 +780,7 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
             <div style="display:flex;gap:6px;">
               <input id="sh-link-input" readonly style="flex:1;background:#0a0f1e;border:1px solid rgba(60,120,220,.3);border-radius:6px;padding:6px 10px;font-size:10px;color:#eef2f8;font-family:Consolas,monospace;outline:none;" />
               <button id="sh-copy-btn" style="background:#ff7a1a;color:#0a0f1e;border:none;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;">Copiar</button>
+              <button id="sh-short-btn" style="background:var(--s3);color:#ffaa44;border:1px solid rgba(255,170,68,.35);border-radius:6px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">✂ Encurtar</button>
             </div>
             <div id="sh-link-info" style="font-size:9px;color:#3d5470;margin-top:5px;"></div>
           </div>
@@ -898,6 +899,21 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
       document.execCommand('copy');
       document.getElementById('sh-copy-btn').textContent = '✓';
     }
+  });
+
+  // Encurtar link via TinyURL
+  document.getElementById('sh-short-btn').addEventListener('click', () => {
+    const url = document.getElementById('sh-link-input').value;
+    if (!url) return;
+    const btn = document.getElementById('sh-short-btn');
+    btn.textContent = '⏳ Abrindo...';
+    // Abre TinyURL com o link já preenchido
+    const tinyUrl = 'https://tinyurl.com/create.php?url=' + encodeURIComponent(url);
+    window.open(tinyUrl, '_blank');
+    btn.textContent = '✂ Encurtar';
+    // Mostrar instrução
+    document.getElementById('sh-link-info').innerHTML =
+      '✅ TinyURL abriu em nova aba — copie o link curto gerado e cole no WhatsApp';
   });
 
   // Opção imagem/PDF
