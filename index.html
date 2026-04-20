@@ -168,7 +168,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .ft-scroll{overflow-y:auto;flex:1;min-height:0;}
 
 /* CHART FAT */
-.fat-chart-wrap{flex:1;min-height:260px;padding:8px 11px;}
+.fat-chart-wrap{flex:1;min-height:280px;padding:8px 11px 4px;}
 
 /* OP STRIP */
 .op-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;height:100%;}
@@ -1260,11 +1260,13 @@ function drawFatLine(){
       }),borderRadius:3,barPercentage:.38,categoryPercentage:.85,order:1}
     ]},
     options:{responsive:true,maintainAspectRatio:false,
+      layout:{padding:{bottom:4}},
       plugins:{legend:{display:true,position:'top',labels:{color:'rgba(255,255,255,.6)',font:{size:9},boxWidth:12,padding:8}},
         tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': R$ '+fmtInt(ctx.parsed.y||0)}}},
       scales:{
         y:{grid:grd,ticks:{...tck,callback:v=>fmtK(v)}},
-        x:{grid:{display:false},ticks:{...tck,maxRotation:0,font:{size:8},maxTicksLimit:30},border:{display:false}}
+        x:{grid:{display:false},border:{display:false},
+          ticks:{color:'rgba(255,255,255,.55)',font:{size:8},maxRotation:0,autoSkip:false,padding:2}}
       }
     }
   });
