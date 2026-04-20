@@ -359,6 +359,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       <div class="klbl"><span class="kdot"></span>Faturamento Acumulado</div>
       <div class="kval" id="k-fat">–</div>
       <div class="kmeta"><span class="kdelta warn" id="k-fat-pct">–</span><span>da meta mensal</span></div>
+      <div class="kmeta" style="margin-top:3px"><span style="font-size:8px;color:rgba(255,255,255,.4)">Projeção mês:</span>&nbsp;<span class="kdelta warn" id="k-fat-proj">–</span></div>
       <div class="pbar"><div class="pfill" id="k-fat-prog" style="width:0%"></div></div>
     </div>
     <div class="kcard" style="--kc:var(--green)">
@@ -385,13 +386,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       </div>
       <div style="flex:1;overflow:hidden;">
         <table class="dt" style="height:100%">
-          <thead><tr><th>Dias</th><th>Volumes</th><th>Ticket</th><th style="color:rgba(255,255,255,.45)">2025</th><th>2026</th></tr></thead>
+          <thead><tr><th>Dias</th><th>Volumes</th><th>Ticket</th><th>R$ Total</th></tr></thead>
           <tbody id="daily-tbody"></tbody>
           <tfoot><tr>
             <td>TOTAL</td>
             <td id="ft-vol">–</td>
             <td id="ft-tkt">–</td>
-            <td id="ft-fat25" style="color:rgba(255,255,255,.5);font-weight:400">–</td>
             <td id="ft-fat">–</td>
           </tr></tfoot>
         </table>
@@ -1114,6 +1114,12 @@ function updateKPIs(){
   kfp.textContent=(pm>=100?'▲ ':'▼ ')+pm+'%';kfp.className='kdelta '+(pm>=100?'pos':'neg');
   document.getElementById('k-fat-prog').style.width=Math.min(pm,100)+'%';
   document.getElementById('k-fat-prog').style.background=pm>=100?'linear-gradient(90deg,#1DB87A,#26d490)':'linear-gradient(90deg,#D71F26,#ff5050)';
+  // Projeção do mês
+  const projEl=document.getElementById('k-fat-proj');
+  if(projEl){
+    projEl.textContent=fmtM(tend)+' ('+pt+'%)';
+    projEl.className='kdelta '+(pt>=100?'pos':'warn');
+  }
 
   // Faturamento 2025 acumulado até o mesmo número de dias que 2026
   const days26=Object.keys(D.fat26).map(Number).sort((a,b)=>a-b);
@@ -1155,25 +1161,18 @@ function updateTable(){
       const metaDia=D.metaMes/30;
       const isDom=wk==='DOM';
       const fatCls=isDom||fat>=metaDia?'vpos above':'vpos below';
-      const f25d=D.fat25[d]||0;
       tr.innerHTML=`<td><span class="dn">${d}</span><span class="dw">${wk}</span></td>
         <td class="vdim" style="font-size:10px">${vol?fmtInt(vol):'–'}</td>
         <td class="vdim" style="font-size:10px">${tkt>0?fmtInt(tkt):'–'}</td>
-        <td class="vdim" style="font-size:10px;color:rgba(255,255,255,.4)">${f25d?fmtInt(f25d):'–'}</td>
         <td class="${fatCls}">${fmtInt(fat)}</td>`;
     }else{
-      const f25e=D.fat25[d]||0;
       tr.innerHTML=`<td><span class="dn" style="color:var(--t3)">${d}</span><span class="dw">${wk}</span></td>
         <td class="vdim">–</td><td class="vdim">–</td>
-        <td class="vdim" style="font-size:10px;color:rgba(255,255,255,.3)">${f25e?fmtInt(f25e):'–'}</td>
         <td class="vdim">–</td>`;
     }
     tb.appendChild(tr);
   }
   const tf=sumObj(D.fat26);
-  const tf25sum=sumObj(D.fat25);
-  const ftf25=document.getElementById('ft-fat25');
-  if(ftf25)ftf25.textContent=fmtInt(tf25sum);
   const _fv=d=>Math.round((D.spVol[d]||0)+(D.bxVol[d]||0)+(D.slVol[d]||0));
   const tv=Object.keys(D.fat26).reduce((s,d)=>s+_fv(parseInt(d)),0);
   const tt=tv>0?Math.round(tf/tv):0;
