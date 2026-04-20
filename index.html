@@ -385,12 +385,13 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       </div>
       <div style="flex:1;overflow:hidden;">
         <table class="dt" style="height:100%">
-          <thead><tr><th>Dias</th><th>Volumes</th><th>Ticket</th><th>R$ Total</th></tr></thead>
+          <thead><tr><th>Dias</th><th>Volumes</th><th>Ticket</th><th style="color:rgba(255,255,255,.45)">2025</th><th>2026</th></tr></thead>
           <tbody id="daily-tbody"></tbody>
           <tfoot><tr>
             <td>TOTAL</td>
             <td id="ft-vol">–</td>
             <td id="ft-tkt">–</td>
+            <td id="ft-fat25" style="color:rgba(255,255,255,.5);font-weight:400">–</td>
             <td id="ft-fat">–</td>
           </tr></tfoot>
         </table>
@@ -1154,17 +1155,25 @@ function updateTable(){
       const metaDia=D.metaMes/30;
       const isDom=wk==='DOM';
       const fatCls=isDom||fat>=metaDia?'vpos above':'vpos below';
+      const f25d=D.fat25[d]||0;
       tr.innerHTML=`<td><span class="dn">${d}</span><span class="dw">${wk}</span></td>
-        <td class="vdim" style="font-size:10.5px">${vol?fmtInt(vol):'–'}</td>
-        <td class="vdim" style="font-size:10.5px">${tkt>0?fmtInt(tkt):'–'}</td>
+        <td class="vdim" style="font-size:10px">${vol?fmtInt(vol):'–'}</td>
+        <td class="vdim" style="font-size:10px">${tkt>0?fmtInt(tkt):'–'}</td>
+        <td class="vdim" style="font-size:10px;color:rgba(255,255,255,.4)">${f25d?fmtInt(f25d):'–'}</td>
         <td class="${fatCls}">${fmtInt(fat)}</td>`;
     }else{
+      const f25e=D.fat25[d]||0;
       tr.innerHTML=`<td><span class="dn" style="color:var(--t3)">${d}</span><span class="dw">${wk}</span></td>
-        <td class="vdim">–</td><td class="vdim">–</td><td class="vdim">–</td>`;
+        <td class="vdim">–</td><td class="vdim">–</td>
+        <td class="vdim" style="font-size:10px;color:rgba(255,255,255,.3)">${f25e?fmtInt(f25e):'–'}</td>
+        <td class="vdim">–</td>`;
     }
     tb.appendChild(tr);
   }
   const tf=sumObj(D.fat26);
+  const tf25sum=sumObj(D.fat25);
+  const ftf25=document.getElementById('ft-fat25');
+  if(ftf25)ftf25.textContent=fmtInt(tf25sum);
   const _fv=d=>Math.round((D.spVol[d]||0)+(D.bxVol[d]||0)+(D.slVol[d]||0));
   const tv=Object.keys(D.fat26).reduce((s,d)=>s+_fv(parseInt(d)),0);
   const tt=tv>0?Math.round(tf/tv):0;
@@ -1244,17 +1253,18 @@ function drawFatLine(){
   const d25=days.map(d=>D.fat25[d]||null);
   C['fatLine']=new Chart(document.getElementById('fatLineChart'),{
     type:'bar',
-    data:{labels:days,datasets:[
-      {label:'2025',data:d25,backgroundColor:'rgba(26,50,72,.35)',borderRadius:3,barPercentage:.38,categoryPercentage:.85,order:2},
+    data:{labels:days.map(String),datasets:[
+      {label:'2025',data:d25,backgroundColor:'rgba(255,255,255,.18)',borderRadius:3,barPercentage:.38,categoryPercentage:.85,order:2},
       {label:'2026',data:d26,backgroundColor:days.map(d=>{
         const w=D.wk26[d];return(w==='SÁB'||w==='DOM')?'rgba(215,31,38,.35)':'rgba(215,31,38,.9)';
       }),borderRadius:3,barPercentage:.38,categoryPercentage:.85,order:1}
     ]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': R$ '+fmtInt(ctx.parsed.y||0)}}},
+      plugins:{legend:{display:true,position:'top',labels:{color:'rgba(255,255,255,.6)',font:{size:9},boxWidth:12,padding:8}},
+        tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': R$ '+fmtInt(ctx.parsed.y||0)}}},
       scales:{
         y:{grid:grd,ticks:{...tck,callback:v=>fmtK(v)}},
-        x:{grid:{display:false},ticks:{...tck,maxTicksLimit:15}}
+        x:{grid:{display:false},ticks:{...tck,maxRotation:0,font:{size:8},maxTicksLimit:30},border:{display:false}}
       }
     }
   });
