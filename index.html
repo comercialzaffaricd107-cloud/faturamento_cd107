@@ -28,7 +28,7 @@ button,input,select,textarea{font:inherit;}
 canvas{max-width:100%;}
 body.modal-open{overflow:hidden;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 80% 60% at 0% 0%,rgba(255,255,255,.02) 0%,transparent 60%), radial-gradient(ellipse 50% 40% at 100% 100%,rgba(42,80,120,.3) 0%,transparent 55%);}
+  background:radial-gradient(ellipse 80% 60% at 0% 0%,rgba(255,255,255,.025) 0%,transparent 60%), radial-gradient(ellipse 50% 40% at 100% 100%,rgba(255,255,255,.05) 0%,transparent 55%);}
 
 /* ═══════════════════════════════════════════════
    PALETA STOK CENTER — Azul Royal + Vermelho
@@ -37,7 +37,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
 /* TOPBAR */
 .topbar{position:sticky;top:0;z-index:30;height:46px;display:flex;align-items:center;padding:0 18px;gap:10px;flex-shrink:0;
-  background:#162D42;border-bottom:2px solid rgba(255,255,255,.12);box-shadow:0 2px 16px rgba(0,0,0,.5);backdrop-filter:blur(10px);}
+  background:linear-gradient(180deg,#343841,#2a2d34);border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 2px 16px rgba(0,0,0,.5);backdrop-filter:blur(10px);}
 .brand{display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .brand-name{font-weight:900;font-size:17px;color:#FFFFFF;letter-spacing:1px;text-transform:uppercase;}
 .brand-name em{color:#D71F26;font-style:normal;}
@@ -57,7 +57,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);
   cursor:pointer;font-size:10px;font-weight:600;color:rgba(255,255,255,.85);
   transition:all .15s;letter-spacing:.3px;text-transform:uppercase;}
-.tbtn:hover{border-color:#D71F26;color:#D71F26;background:rgba(215,31,38,.08);}
+.tbtn:hover{border-color:#9aa0aa;color:#f3f4f6;background:rgba(255,255,255,.06);}
 .tbtn.save-btn{border-color:rgba(215,31,38,.4);color:#ff7070;}
 .tbtn.save-btn:hover{border-color:#D71F26;}
 .tbtn.share{border-color:rgba(29,184,122,.4);color:#1DB87A;}
@@ -65,7 +65,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .tbtn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 
 /* DRAWER */
-.drawer{position:sticky;top:46px;z-index:24;background:#162D42;border-bottom:1px solid rgba(255,255,255,.08);
+.drawer{position:sticky;top:46px;z-index:24;background:linear-gradient(180deg,#343841,#2a2d34);border-bottom:1px solid rgba(255,255,255,.08);
   display:none;padding:8px 18px;gap:8px;align-items:flex-start;flex-wrap:wrap;flex-shrink:0;overflow-x:auto;}
 .drawer.open{display:flex;}
 .drawer-section{display:flex;flex-direction:column;gap:3px;}
@@ -78,10 +78,10 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .fslot-lbl{font-size:9px;font-weight:600;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.4px;}
 .fslot-val{font-size:9px;color:rgba(255,255,255,.35);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .st-ok{color:#1DB87A !important;} .st-err{color:#ff5555 !important;}
-.st-saved{color:#60a0ff !important;}
+.st-saved{color:#c3cad4 !important;}
 
 /* DAY STRIP */
-.dstrip{position:sticky;top:46px;z-index:23;background:#162D42;border-bottom:1px solid rgba(255,255,255,.08);padding:4px 18px;
+.dstrip{position:sticky;top:46px;z-index:23;background:linear-gradient(180deg,#343841,#2a2d34);border-bottom:1px solid rgba(255,255,255,.08);padding:4px 18px;
   display:flex;gap:2px;align-items:center;flex-shrink:0;overflow-x:auto;}
 .dstrip::-webkit-scrollbar{height:2px;}
 .dstrip::-webkit-scrollbar-thumb{background:rgba(215,31,38,.4);}
@@ -96,7 +96,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .ds-lbl{font-size:8px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.5px;margin-right:4px;}
 
 /* CANVAS */
-.canvas{background:#1E3A56;
+.canvas{background:linear-gradient(180deg,#252931 0%,#1d2026 100%);
   padding:12px 14px 14px;
   display:grid;
   grid-template-columns:minmax(280px,1.05fr) minmax(520px,1.7fr) minmax(320px,1.05fr);
@@ -132,11 +132,11 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .col-ops > .panel{flex:1;height:100%;display:flex;flex-direction:column;}
 
 /* KPI CARDS — fundo escuro com borda colorida */
-.kcard{background:linear-gradient(180deg,rgba(42,80,120,.98),rgba(31,61,90,.98));border:none;border-radius:var(--radius);padding:14px 16px 12px;min-height:132px;
+.kcard{background:linear-gradient(180deg,rgba(58,62,72,.98),rgba(36,39,46,.98));border:none;border-radius:var(--radius);padding:14px 16px 12px;min-height:132px;
   position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s,border-color .2s;
   border-left:3px solid #D71F26;box-shadow:var(--shadow-sm);backdrop-filter:blur(8px);}
 .kcard::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;
-  background:radial-gradient(circle,rgba(215,31,38,.12) 0%,transparent 70%);}
+  background:radial-gradient(circle,rgba(255,255,255,.08) 0%,transparent 70%);}
 .kcard:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.5);}
 .klbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
   color:rgba(255,255,255,.5);margin-bottom:6px;display:flex;align-items:center;gap:4px;}
@@ -149,10 +149,10 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .kdelta.neg{background:rgba(215,31,38,.15);color:#ff6060;font-weight:700;}
 .kdelta.warn{background:rgba(245,192,106,.12);color:#F5C06A;}
 .pbar{height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:7px;overflow:hidden;}
-.pfill{height:100%;border-radius:2px;background:linear-gradient(90deg,#D71F26,#ff5050);transition:width .6s;}
+.pfill{height:100%;border-radius:2px;background:linear-gradient(90deg,#aeb4bd,#737983);transition:width .6s;}
 
 /* BASE PANEL */
-.panel{background:linear-gradient(180deg,rgba(42,80,120,.98),rgba(34,65,97,.98));border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);
+.panel{background:linear-gradient(180deg,rgba(56,60,70,.98),rgba(34,37,44,.98));border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);
   overflow:hidden;position:relative;min-height:0;box-shadow:var(--shadow-sm);backdrop-filter:blur(8px);}
 .panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
   background:linear-gradient(90deg,rgba(255,255,255,.2),rgba(255,255,255,.05),transparent);}
@@ -161,7 +161,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:rgba(0,0,0,.2);}
 .ptitle{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,.7);}
 .pbadge{font-family:'Consolas','Courier New',monospace;font-size:8px;padding:2px 7px;border-radius:3px;
-  background:#162D42;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);}
+  background:#2f343c;color:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.12);}
 
 /* TABELA DIÁRIA */
 .dt{width:100%;border-collapse:collapse;font-size:11px;}
@@ -186,7 +186,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .vpos.below{color:#ff5050 !important;font-weight:700 !important;}
 .rsel .vpos.above{color:#1DB87A !important;}
 .vdim{color:rgba(255,255,255,.5);font-family:'Consolas','Courier New',monospace;}
-.dt tfoot td{padding:7px 8px;text-align:right;background:#162D42;
+.dt tfoot td{padding:7px 8px;text-align:right;background:#2d3138;
   font-family:'Consolas','Courier New',monospace;font-size:10.5px;font-weight:700;
   color:#F5C06A;border-top:2px solid rgba(255,255,255,.15);}
 .dt tfoot td:first-child{text-align:left;font-size:8px;letter-spacing:.8px;
@@ -232,7 +232,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .omini canvas{height:70px !important;}
 
 /* SCARD — col-right */
-.scard{background:linear-gradient(180deg,rgba(42,80,120,.98),rgba(34,65,97,.98));border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);
+.scard{background:linear-gradient(180deg,rgba(56,60,70,.98),rgba(34,37,44,.98));border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);
   overflow:hidden;position:relative;box-shadow:var(--shadow-sm);}
 .shdr{padding:6px 11px;border-bottom:1px solid rgba(255,255,255,.06);
   font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
@@ -250,11 +250,11 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.15);}
 .badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:8px;font-weight:700;}
 .badge.gn{background:rgba(29,184,122,.15);color:#1DB87A;border:1px solid rgba(29,184,122,.25);}
-.badge.rd{background:#162D42;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);}
+.badge.rd{background:#2f343c;color:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.12);}
 .badge.or{background:rgba(245,192,106,.12);color:#F5C06A;}
 
 /* CARD MÊS A MÊS DESTAQUE */
-.scard-mes{background:linear-gradient(160deg,#1a3560 0%,#2A5078 60%,#1e2f4d 100%);min-height:0;
+.scard-mes{background:linear-gradient(160deg,#3a3f48 0%,#2d3138 60%,#22252b 100%);min-height:0;
   border:1px solid rgba(245,192,106,.35);border-radius:10px;overflow:hidden;
   position:relative;box-shadow:0 4px 20px rgba(0,0,0,.45),0 0 0 1px rgba(245,192,106,.08);
   flex-shrink:0;}
@@ -307,12 +307,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 /* MISC */
 .upd-date{font-size:8.5px;color:rgba(255,255,255,.3);}
 /* MODAL + FOOTER */
-.app-footer{text-align:center;padding:10px 24px;font-size:10px;color:#6070A0;border-top:1px solid rgba(60,120,220,.15);background:#162D42;font-family:'Segoe UI',sans-serif;letter-spacing:.4px;}
-.app-footer strong{color:#8ea7ca;}
+.app-footer{text-align:center;padding:10px 24px;font-size:10px;color:#adb4bf;border-top:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#32363f,#292c33);font-family:'Segoe UI',sans-serif;letter-spacing:.4px;}
+.app-footer strong{color:#e7e9ed;}
 .share-modal{display:none;position:fixed;inset:0;z-index:300;background:rgba(5,10,25,.88);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;}
 .share-modal.open{display:flex;}
-.share-modal-card{background:#0f1a2e;border:1px solid rgba(60,120,220,.36);border-radius:14px;padding:26px 28px;width:480px;max-width:94vw;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.6);}
-.share-modal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:14px 14px 0 0;background:linear-gradient(90deg,#ff7a1a,#ffc23a);}
+.share-modal-card{background:linear-gradient(180deg,#2f333b,#24272e);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:26px 28px;width:480px;max-width:94vw;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.55);}
+.share-modal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:14px 14px 0 0;background:linear-gradient(90deg,#b8bec7,#6c727c);}
 
 
 /* Executive gray refinements */
@@ -321,6 +321,18 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .kpi,.pill,.chip,.badge{backdrop-filter:blur(4px);}
 .compare-box,.metric-box,.mini-card,.subcard{background:rgba(255,255,255,.03)!important;border-color:rgba(255,255,255,.06)!important;}
 .card-title,.section-title,.muted{letter-spacing:.08em;}
+
+.meta-hit{border-color:rgba(29,184,122,.42)!important;box-shadow:0 0 0 1px rgba(29,184,122,.14),0 16px 36px rgba(0,0,0,.36),0 0 24px rgba(29,184,122,.10)!important;}
+.meta-hit .shdr,.meta-hit .klbl{color:rgba(214,255,234,.86)!important;}
+.meta-hit .kval,.meta-hit .exec-val,.meta-hit .sval{color:#1DB87A!important;}
+.kcard,.panel,.scard,.scard-mes,.scard-exec,.exec-box{transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease;}
+.exec-box{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025));}
+.exec-box.highlight{background:linear-gradient(180deg,rgba(29,184,122,.12),rgba(255,255,255,.03));}
+.kcard{border-left:3px solid rgba(255,255,255,.14);} 
+.kcard .kdot{background:#aeb4bd;}
+.col-center .panel,.col-left .panel,.scard,.scard-exec{backdrop-filter:blur(8px);} 
+.number-anim{font-variant-numeric:tabular-nums;}
+
 
 @media print{
   html,body{overflow:visible !important;height:auto !important;min-height:auto !important;}
@@ -436,7 +448,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
   <!-- KPI ROW -->
   <div class="kpi-row">
-    <div class="kcard" style="--kc:var(--cyan)">
+    <div class="kcard" id="kpi-fat-card" style="--kc:var(--cyan)">
       <div class="klbl"><span class="kdot"></span>Faturamento Acumulado</div>
       <div class="kval" id="k-fat">–</div>
       <div class="kmeta"><span class="kdelta warn" id="k-fat-pct">–</span><span>da meta mensal</span></div>
@@ -449,7 +461,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       <div class="kmeta"><span class="kdelta" id="k-fat25-d">–</span><span>vs 2026 acumulado</span></div>
       <div class="pbar"><div class="pfill" id="k-fat25-prog" style="width:0%;background:linear-gradient(90deg,rgba(255,255,255,.4),rgba(255,255,255,.2))"></div></div>
     </div>
-    <div class="kcard" style="--kc:var(--orange)">
+    <div class="kcard" id="kpi-sem-card" style="--kc:var(--orange)">
       <div class="klbl"><span class="kdot"></span>Semestre Acumulado</div>
       <div class="kval" id="k-sem">–</div>
       <div class="kmeta"><span class="kdelta pos" id="k-sem-d">–</span><span>vs meta semestral</span></div>
@@ -487,14 +499,14 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       <div class="phead">
         <div class="ptitle">Faturamento Diário · 2025 vs 2026</div>
         <div style="display:flex;gap:7px;font-size:8px;">
-          <span style="display:flex;align-items:center;gap:2px;color:var(--t3)"><span style="width:7px;height:7px;background:rgba(40,80,180,.75);border-radius:2px;display:inline-block"></span>2025</span>
+          <span style="display:flex;align-items:center;gap:2px;color:var(--t3)"><span style="width:7px;height:7px;background:rgba(156,163,175,.85);border-radius:2px;display:inline-block"></span>2025</span>
           <span style="display:flex;align-items:center;gap:2px;color:var(--t3)"><span style="width:7px;height:7px;background:rgba(255,122,26,.8);border-radius:2px;display:inline-block"></span>2026</span>
         </div>
       </div>
       <div class="fat-chart-wrap"><canvas id="fatLineChart"></canvas></div>
     </div>
 
-    <div class="panel">
+    <div class="panel" id="summary-meta-panel">
       <div class="phead"><div class="ptitle">Resumo vs Meta</div></div>
       <table class="mtable">
         <thead><tr><th>CD</th><th>Meta Mês</th><th>Faturado</th><th>Tendência</th><th>GAP</th><th>Realiz.</th></tr></thead>
@@ -528,7 +540,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       </div>
     </div>
 
-    <div class="scard-exec">
+    <div class="scard-exec" id="card-semestre-comp">
       <div class="shdr">Acumulado Semestre · Comparativo</div>
       <div class="exec-compare">
         <div class="exec-box">
@@ -553,7 +565,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     </div>
 
     <div class="bottom-pair">
-      <div class="scard">
+      <div class="scard" id="card-fat-dia">
         <div class="shdr" id="r-dh">Faturado · Dia 15</div>
         <div class="sgrid">
           <div class="scell"><div class="slbl">2025</div><div class="sval" id="r-d25">–</div><div class="ssub">R$</div></div>
@@ -850,7 +862,7 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
       <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
 
         <!-- OPÇÃO 1: Link interativo -->
-        <div id="sh-opt-link" style="border:1px solid rgba(60,120,220,.3);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .15s;" onmouseover="this.style.borderColor='#ff7a1a'" onmouseout="this.style.borderColor='rgba(60,120,220,.3)'">
+        <div id="sh-opt-link" style="border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .15s;" onmouseover="this.style.borderColor='#ff7a1a'" onmouseout="this.style.borderColor='rgba(255,255,255,.3)'">
           <div style="display:flex;align-items:center;gap:10px;">
             <div style="font-size:20px;">🔗</div>
             <div>
@@ -860,7 +872,7 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
           </div>
           <div id="sh-link-area" style="display:none;margin-top:12px;">
             <div style="display:flex;gap:6px;">
-              <input id="sh-link-input" readonly style="flex:1;background:#162D42;border:1px solid rgba(60,120,220,.3);border-radius:6px;padding:6px 10px;font-size:10px;color:#eef2f8;font-family:Consolas,monospace;outline:none;" />
+              <input id="sh-link-input" readonly style="flex:1;background:#2d3138;border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:6px 10px;font-size:10px;color:#eef2f8;font-family:Consolas,monospace;outline:none;" />
               <button id="sh-copy-btn" style="background:#ff7a1a;color:#0a0f1e;border:none;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;">Copiar</button>
               <button id="sh-short-btn" style="background:var(--s3);color:#ffaa44;border:1px solid rgba(255,170,68,.35);border-radius:6px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">✂ Encurtar</button>
             </div>
@@ -869,7 +881,7 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
         </div>
 
         <!-- OPÇÃO 2: Imagem / PDF -->
-        <div id="sh-opt-img" style="border:1px solid rgba(60,120,220,.3);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .15s;" onmouseover="this.style.borderColor='#ff7a1a'" onmouseout="this.style.borderColor='rgba(60,120,220,.3)'">
+        <div id="sh-opt-img" style="border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .15s;" onmouseover="this.style.borderColor='#ff7a1a'" onmouseout="this.style.borderColor='rgba(255,255,255,.3)'">
           <div style="display:flex;align-items:center;gap:10px;">
             <div style="font-size:20px;">🖨️</div>
             <div>
@@ -881,7 +893,7 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
 
       </div>
 
-      <button id="sh-close" style="width:100%;padding:8px;background:transparent;border:1px solid rgba(60,120,220,.25);border-radius:8px;color:#6070A0;font-size:12px;cursor:pointer;">Fechar</button>
+      <button id="sh-close" style="width:100%;padding:8px;background:transparent;border:1px solid rgba(255,255,255,.25);border-radius:8px;color:#6070A0;font-size:12px;cursor:pointer;">Fechar</button>
     </div>`;
   document.body.appendChild(mo);
 
@@ -1072,7 +1084,7 @@ document.getElementById('upload-toggle').addEventListener('click',()=>{
           .canvas{height:auto!important;overflow:visible!important;}
           @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
         </style></head><body>
-        <div style="font-size:10px;color:#6070A0;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid rgba(60,120,220,.2)">
+        <div style="font-size:10px;color:#6070A0;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.2)">
           CD STOK CENTER · Executive Dashboard · ${today}
         </div>${clone.outerHTML}
         <script>window.onload=function(){setTimeout(function(){window.print();},600);};<\/script>
@@ -1192,7 +1204,35 @@ setInterval(tick,1000);tick();
 // ── CHART HELPERS ──
 const kill=id=>{if(C[id]){C[id].destroy();delete C[id];}};
 const grd={color:'rgba(255,255,255,.06)',drawBorder:false};
-const tck={color:'#4a6080',font:{size:9}};
+const tck={color:'#8f98a5',font:{size:9}};
+
+
+function setAnimatedNumber(id,val,fmt='int'){
+  const el=document.getElementById(id); if(!el) return;
+  el.classList.add('number-anim');
+  const final=Number(val)||0;
+  const prev=Number(el.dataset.animVal||0);
+  if(!isFinite(final)) return;
+  const start = prev===final ? Math.max(0, final*0.94) : prev;
+  const duration = 700;
+  const t0 = performance.now();
+  const format = v => {
+    if(fmt==='m') return fmtM(v);
+    if(fmt==='pct') return Math.round(v)+'%';
+    return fmtInt(v);
+  };
+  function frame(now){
+    const p=Math.min(1,(now-t0)/duration);
+    const eased=1-Math.pow(1-p,3);
+    const cur=start+(final-start)*eased;
+    el.textContent=format(cur);
+    if(p<1) requestAnimationFrame(frame);
+    else el.textContent=format(final);
+  }
+  el.dataset.animVal=String(final);
+  requestAnimationFrame(frame);
+}
+function toggleMetaHit(id,on){ const el=document.getElementById(id); if(el) el.classList.toggle('meta-hit', !!on); }
 
 // ── UPDATES ──
 function updateDayPips(){
@@ -1214,7 +1254,7 @@ function updateKPIs(){
   const tkt=tvk>0?Math.round(tf/tvk):0;
   const sp=D.semMeta>0?Math.round((D.semFat/D.semMeta)*100):0;
   const kfatEl=document.getElementById('k-fat');
-  kfatEl.textContent=fmtM(tf);
+  setAnimatedNumber('k-fat',tf,'m');
   kfatEl.style.color=pm>=100?'#1DB87A':'#D71F26';kfatEl.style.fontWeight=pm>=100?'900':'700';
   const kfp=document.getElementById('k-fat-pct');
   kfp.textContent=(pm>=100?'▲ ':'▼ ')+pm+'%';kfp.className='kdelta '+(pm>=100?'pos':'neg');
@@ -1233,7 +1273,7 @@ function updateKPIs(){
   const tf25=Object.keys(D.fat25).map(Number).filter(d=>d<=maxDay26).reduce((s,d)=>s+(D.fat25[d]||0),0);
   const fat25El=document.getElementById('k-fat25');
   if(fat25El){
-    fat25El.textContent=fmtM(tf25);
+    setAnimatedNumber('k-fat25',tf25,'m');
     const diff=tf25>0?Math.round(((tf-tf25)/tf25)*100):0;
     const f25d=document.getElementById('k-fat25-d');
     if(f25d){f25d.textContent=(diff>=0?'▲ +':'▼ ')+diff+'%';f25d.className='kdelta '+(diff>=0?'pos':'neg');}
@@ -1244,7 +1284,7 @@ function updateKPIs(){
 
   // k-ticket removido
 
-  document.getElementById('k-sem').textContent=fmtM(D.semFat);
+  setAnimatedNumber('k-sem',D.semFat,'m');
   const ksd=document.getElementById('k-sem-d');
   ksd.textContent=(sp>=100?'▲ ':'▼ ')+sp+'%';ksd.className='kdelta '+(sp>=100?'pos':'neg');
   document.getElementById('k-sem-prog').style.width=Math.min(sp,110)+'%';
@@ -1254,6 +1294,8 @@ function updateKPIs(){
   const ktst=document.getElementById('k-sem-tend');
   if(ktst){ktst.textContent=fmtM(tendSem)+' ('+tendSemPct+'%)';ktst.className='kdelta '+(tendSemPct>=100?'pos':'warn');}
 
+  toggleMetaHit('kpi-fat-card', pm>=100);
+  toggleMetaHit('kpi-sem-card', sp>=100);
   D.metaAting.Abr=pm>0?pm:null;
 }
 
@@ -1305,10 +1347,10 @@ function updateTable(){
   const _fv=d=>Math.round((D.spVol[d]||0)+(D.bxVol[d]||0)+(D.slVol[d]||0));
   const tv=Object.keys(D.fat26).reduce((s,d)=>s+_fv(parseInt(d)),0);
   const tt=tv>0?Math.round(tf/tv):0;
-  document.getElementById('ft-vol').textContent=fmtInt(tv);
+  setAnimatedNumber('ft-vol',tv,'int');
   document.getElementById('ft-tkt').textContent=tt>0?fmtInt(tt):'–';
   const ftEl=document.getElementById('ft-fat');
-  ftEl.textContent=fmtInt(tf);
+  setAnimatedNumber('ft-fat',tf,'int');
   ftEl.style.color=tf>=D.metaMes?'#1DB87A':'#D71F26';ftEl.style.fontWeight='700';
 }
 
@@ -1328,11 +1370,15 @@ function updateSummary(){
     const el2=document.getElementById(id+'2');if(el2)el2.textContent=t;
   });
   // cor faturado vs meta
+  setAnimatedNumber('s-meta',D.metaMes,'int'); setAnimatedNumber('s-meta2',D.metaMes,'int');
+  setAnimatedNumber('s-fat',tf,'int'); setAnimatedNumber('s-fat2',tf,'int');
+  setAnimatedNumber('s-trend',tend,'int'); setAnimatedNumber('s-trend2',tend,'int');
   ['s-fat','s-fat2'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.color=tf>=D.metaMes?'#1DB87A':'#D71F26';e.style.fontWeight=tf>=D.metaMes?'700':'700';});
   // cor GAP
   ['s-gap','s-gap2'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.color=gap>=0?'#1DB87A':'#D71F26';e.style.fontWeight='700';});
   // cor % realização
   ['s-pct','s-pct2'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.color=tend>=D.metaMes?'#1DB87A':'#D71F26';});
+  toggleMetaHit('summary-meta-panel', tend>=D.metaMes);
   ['m1','m2','m3'].forEach((id,i)=>{const v=sem[i]?fmtInt(sem[i]):'–';document.getElementById(id).textContent=v;document.getElementById(id+'b').textContent=v;});
   document.getElementById('m-proj').textContent=f(proj);document.getElementById('m-proj2').textContent=f(proj);
   document.getElementById('m-trend').textContent=f(Math.round(avg));document.getElementById('m-trend2').textContent=f(Math.round(avg));
@@ -1344,18 +1390,19 @@ function updateRight(){
   const at=D.metaDia26>0?((f26/D.metaDia26)*100).toFixed(0):'–';
   document.getElementById('r-dh').textContent='Faturado · Dia '+cd;
   document.getElementById('r-mh').textContent='Meta · Dia '+cd;
-  document.getElementById('r-d25').textContent=fmtInt(f25);
+  setAnimatedNumber('r-d25',f25,'int');
   const rd26el=document.getElementById('r-d26');
-  rd26el.textContent=fmtInt(f26);
+  setAnimatedNumber('r-d26',f26,'int');
   rd26el.style.color=f26>=D.metaDia26?'#1DB87A':'#D71F26';rd26el.style.fontWeight='900';
   document.getElementById('r-dvar').textContent=f25>0?'+'+vr+'% vs 2025':'R$';
-  document.getElementById('r-m25').textContent=fmtInt(D.metaDia25);
-  document.getElementById('r-m26').textContent=fmtInt(D.metaDia26);
+  setAnimatedNumber('r-m25',D.metaDia25,'int');
+  setAnimatedNumber('r-m26',D.metaDia26,'int');
   document.getElementById('r-mvar').textContent=at!=='–'?at+'% atingido':'R$';
-  document.getElementById('r-sf').textContent=fmtInt(D.semFat);
-  document.getElementById('r-sm').textContent=fmtInt(D.semMeta);
+  setAnimatedNumber('r-sf',D.semFat,'int');
+  setAnimatedNumber('r-sm',D.semMeta,'int');
   const sp2=D.semMeta>0?(((D.semFat/D.semMeta)-1)*100).toFixed(1):'–';
-  const _rMeta=document.getElementById('r-sem-meta');if(_rMeta)_rMeta.textContent=fmtInt(D.semMeta);
+  setAnimatedNumber('r-sem-meta',D.semMeta,'int');
+  const _rMeta=document.getElementById('r-sem-meta');
   const _rHit=document.getElementById('r-sem-hit');if(_rHit)_rHit.textContent=(D.semMeta>0?Math.round((D.semFat/D.semMeta)*100):0)+'%';
   const tfR=sumObj(D.fat26),ndR=Object.keys(D.fat26).length;
   const avgR=ndR>0?tfR/ndR:0,tendR=Math.round(avgR*30);
@@ -1363,17 +1410,19 @@ function updateRight(){
   const tendSemPctR=D.semMeta>0?Math.round((tendSemR/D.semMeta)*100):0;
   document.getElementById('r-sbadge').textContent=(parseFloat(sp2)>=0?'▲ +':'▼ ')+Math.abs(parseFloat(sp2)||0).toFixed(1)+'% vs 2025';
   const _rst=document.getElementById('r-stend');if(_rst)_rst.textContent='Tendência: '+fmtM(tendSemR)+' ('+tendSemPctR+'%)';
+  toggleMetaHit('card-fat-dia', f26>=D.metaDia26);
+  toggleMetaHit('card-semestre-comp', D.semFat>=D.semMeta);
 }
 
 function updateOpCards(){
-  document.getElementById('op-sv').textContent=fmtInt(sumObj(D.spVol));
-  document.getElementById('op-st').textContent=fmtInt(sumObj(D.spTar));
+  setAnimatedNumber('op-sv',sumObj(D.spVol),'int');
+  setAnimatedNumber('op-st',sumObj(D.spTar),'int');
   document.getElementById('op-sd').textContent=Object.keys(D.spVol).length;
-  document.getElementById('op-bv').textContent=fmtInt(sumObj(D.bxVol));
-  document.getElementById('op-bt').textContent=fmtInt(sumObj(D.bxTar));
+  setAnimatedNumber('op-bv',sumObj(D.bxVol),'int');
+  setAnimatedNumber('op-bt',sumObj(D.bxTar),'int');
   document.getElementById('op-bd').textContent=Object.keys(D.bxVol).length;
-  document.getElementById('op-slv').textContent=fmtInt(sumObj(D.slVol));
-  document.getElementById('op-slt').textContent=fmtInt(sumObj(D.slTar));
+  setAnimatedNumber('op-slv',sumObj(D.slVol),'int');
+  setAnimatedNumber('op-slt',sumObj(D.slTar),'int');
   document.getElementById('op-sld').textContent=Object.keys(D.slVol).length;
 }
 
@@ -1477,7 +1526,7 @@ function drawMiniCharts(){
   const slData=sd.map(d=>D.slVol[d]||0);
   kill('sel');
   C['sel']=new Chart(document.getElementById('selChart'),{type:'line',data:{labels:sd.map(String),datasets:[
-    {data:slData,borderColor:'#60a0ff',backgroundColor:'rgba(96,160,255,.08)',fill:true,borderWidth:1.5,pointRadius:0,tension:0.4,label:'Sel.Inv.'},
+    {data:slData,borderColor:'#9aa0aa',backgroundColor:'rgba(154,160,170,.10)',fill:true,borderWidth:1.5,pointRadius:0,tension:0.4,label:'Sel.Inv.'},
     avgLine(slData,'rgba(245,192,106,.9)')
   ]},options:mo});
 }
