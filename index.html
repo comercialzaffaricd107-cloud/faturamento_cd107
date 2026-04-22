@@ -516,10 +516,10 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
         </tbody>
       </table>
       <table class="mwk">
-        <thead><tr><th style="text-align:left">Semana</th><th>1–4</th><th>5–11</th><th>12–18</th><th>19–25</th><th>26–30</th><th class="thp">Proj./dia</th><th class="tht">Trend/dia</th></tr></thead>
+        <thead><tr><th style="text-align:left">Semana</th><th id="mh1">1–4</th><th id="mh2">5–11</th><th id="mh3">12–18</th><th id="mh4">19–25</th><th id="mh5">26–30</th><th class="thp">Proj./dia</th><th class="tht">Trend/dia</th></tr></thead>
         <tbody>
-          <tr><td>CD STOK CENTER</td><td id="m1">–</td><td id="m2">–</td><td id="m3">–</td><td class="dash">–</td><td class="dash">–</td><td class="vrd" id="m-proj">–</td><td class="vor" id="m-trend">–</td></tr>
-          <tr style="opacity:.65"><td class="vdm">R$ Total</td><td id="m1b">–</td><td id="m2b">–</td><td id="m3b">–</td><td class="dash">–</td><td class="dash">–</td><td class="vrd" id="m-proj2">–</td><td class="vor" id="m-trend2">–</td></tr>
+          <tr><td>CD STOK CENTER</td><td id="m1">–</td><td id="m2">–</td><td id="m3">–</td><td id="m4">–</td><td id="m5">–</td><td class="vrd" id="m-proj">–</td><td class="vor" id="m-trend">–</td></tr>
+          <tr style="opacity:.65"><td class="vdm">R$ Total</td><td id="m1b">–</td><td id="m2b">–</td><td id="m3b">–</td><td id="m4b">–</td><td id="m5b">–</td><td class="vrd" id="m-proj2">–</td><td class="vor" id="m-trend2">–</td></tr>
         </tbody>
       </table>
     </div>
@@ -1354,13 +1354,57 @@ function updateTable(){
   ftEl.style.color=tf>=D.metaMes?'#1DB87A':'#D71F26';ftEl.style.fontWeight='700';
 }
 
+
+function getCalendarWeekBuckets(){
+  const year=(D.anoAtual||2026);
+  const month=(D.mesAtual!=null?D.mesAtual-1:3);
+  const lastDay=new Date(year, month+1, 0).getDate();
+  const firstDate=new Date(year, month, 1);
+  const firstSunday=new Date(firstDate);
+  firstSunday.setDate(firstDate.getDate()-firstDate.getDay());
+
+  const buckets=[];
+  let cursor=new Date(firstSunday);
+  while(true){
+    const start=new Date(cursor);
+    const end=new Date(cursor);
+    end.setDate(end.getDate()+6);
+
+    const days=[];
+    for(let d=1; d<=lastDay; d++){
+      const dt=new Date(year, month, d);
+      if(dt>=start && dt<=end) days.push(d);
+    }
+    if(days.length){
+      buckets.push({start,end,days});
+    }
+    cursor.setDate(cursor.getDate()+7);
+    if(cursor.getMonth()>month || (cursor.getFullYear()>year) || (cursor.getMonth()===month+1 && cursor.getDate()>7)) break;
+    if(buckets.length>6) break;
+  }
+  return buckets;
+}
+
+function fmtRangeShort(start,end){
+  const pad=n=>String(n).padStart(2,'0');
+  const s=`${pad(start.getDate())}/${pad(start.getMonth()+1)}`;
+  const e=`${pad(end.getDate())}/${pad(end.getMonth()+1)}`;
+  return `${s}–${e}`;
+}
+
+function calcWeeklyAverages(){
+  const buckets=getCalendarWeekBuckets();
+  return buckets.map(b=>{
+    const vals=b.days.map(d=>D.fat26[d]).filter(v=>v!=null && !isNaN(v));
+    const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):null;
+    return {...b, avg};
+  });
+}
+
 function updateSummary(){
   const tf=sumObj(D.fat26),nd=Object.keys(D.fat26).length,avg=nd>0?tf/nd:0,tend=Math.round(avg*30);
   const gap=tend-D.metaMes,pct=D.metaMes>0?((tend/D.metaMes)*100).toFixed(1)+'%':'–';
-  const sem=[[1,4],[5,11],[12,18]].map(([a,b])=>{
-    const ds=Object.keys(D.fat26).map(Number).filter(d=>d>=a&&d<=b);
-    return ds.length?Math.round(ds.reduce((s,d)=>s+D.fat26[d],0)/ds.length):null;
-  });
+  const sem=calcWeeklyAverages();
   const dr=30-nd,proj=dr>0?Math.round((D.metaMes-tf)/dr):0;
   const f=v=>v!=null?fmtInt(v):'–';
   [['s-meta',D.metaMes],['s-fat',tf],['s-trend',tend],
@@ -1369,17 +1413,25 @@ function updateSummary(){
     const el=document.getElementById(id);if(el)el.textContent=t;
     const el2=document.getElementById(id+'2');if(el2)el2.textContent=t;
   });
-  // cor faturado vs meta
   setAnimatedNumber('s-meta',D.metaMes,'int'); setAnimatedNumber('s-meta2',D.metaMes,'int');
   setAnimatedNumber('s-fat',tf,'int'); setAnimatedNumber('s-fat2',tf,'int');
   setAnimatedNumber('s-trend',tend,'int'); setAnimatedNumber('s-trend2',tend,'int');
-  ['s-fat','s-fat2'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.color=tf>=D.metaMes?'#1DB87A':'#D71F26';e.style.fontWeight=tf>=D.metaMes?'700':'700';});
-  // cor GAP
+  ['s-fat','s-fat2'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.color=tf>=D.metaMes?'#1DB87A':'#D71F26';e.style.fontWeight='700';});
   ['s-gap','s-gap2'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.color=gap>=0?'#1DB87A':'#D71F26';e.style.fontWeight='700';});
-  // cor % realização
   ['s-pct','s-pct2'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.color=tend>=D.metaMes?'#1DB87A':'#D71F26';});
   toggleMetaHit('summary-meta-panel', tend>=D.metaMes);
-  ['m1','m2','m3'].forEach((id,i)=>{const v=sem[i]?fmtInt(sem[i]):'–';document.getElementById(id).textContent=v;document.getElementById(id+'b').textContent=v;});
+
+  for(let i=1;i<=5;i++){
+    const head=document.getElementById('mh'+i);
+    const cell=document.getElementById('m'+i);
+    const cellb=document.getElementById('m'+i+'b');
+    const bucket=sem[i-1];
+    if(head) head.textContent=bucket ? fmtRangeShort(bucket.start,bucket.end) : '–';
+    const txt=bucket && bucket.avg!=null ? fmtInt(bucket.avg) : '–';
+    if(cell) cell.textContent=txt;
+    if(cellb) cellb.textContent=txt;
+  }
+
   document.getElementById('m-proj').textContent=f(proj);document.getElementById('m-proj2').textContent=f(proj);
   document.getElementById('m-trend').textContent=f(Math.round(avg));document.getElementById('m-trend2').textContent=f(Math.round(avg));
 }
